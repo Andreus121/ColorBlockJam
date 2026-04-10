@@ -20,15 +20,19 @@ class Tablero{
         Pieza** piezas,
         int cantidadPiezas);
     ~Tablero();
-
-    void agregarPieza(Pieza pieza);
-    //void agregarPiezas(Pieza* piezas);
-    
     void imprimirTablero();
+    
+    //añadir las paredes al tablero
+    void agregarParedes(char* paredes[]);
+
+    //añadir las piezas al juego
+    void agregarPieza(Pieza pieza);
+    void agregarPiezas();
+
+    //void agregarSalida();
+    //void agregarSalidas();
 
     /*
-    void agregarSalida();
-    void agregarSalidas();
     void agregarCompuerta();
     void agregarCompuertas();
     */

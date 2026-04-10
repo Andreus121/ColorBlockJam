@@ -12,18 +12,7 @@ Tablero::Tablero(int ancho, int alto, Pieza** piezas, int cantidadPiezas){
     for (size_t i = 0; i < ancho; i++){
         cuadricula[i] = new char[alto];
         for (size_t j = 0; j < alto; j++){
-            cuadricula[i][j] = '-';
-        }
-    }
-}
-
-void Tablero::agregarPieza(Pieza pieza){
-    // agregar la pieza a la matriz
-    for (int i = 0; i < pieza.ancho*pieza.alto; i+=pieza.ancho) {
-        for(int j = 0; j < pieza.ancho; j++) {
-            if((int)pieza.geometria[i + j] == 1) {
-                this->cuadricula[pieza.y + j][pieza.x + i/pieza.ancho] = pieza.color;
-            }
+            cuadricula[i][j] = ' ';
         }
     }
 }
@@ -46,5 +35,39 @@ void Tablero::imprimirTablero(){
             std::cout << cuadricula[j][i];
         }
         std::cout << std::endl;
+    }
+}
+
+/*
+METODOS PARA AÑADIR COSAS AL TABLERO
+*/
+
+// agrega las paredes al tablero
+void Tablero::agregarParedes(char* paredes[]){
+    for(int i = 0; i<alto;i++){
+        for(int j=0; j<ancho;j++){
+            if(paredes[i][j]=='#'){
+                cuadricula[i][j] = '#';
+            }
+        }
+    }
+}
+
+// agrega 1 pieza unica al tablero
+void Tablero::agregarPieza(Pieza pieza){
+    // agregar la pieza a la matriz
+    for (int i = 0; i < pieza.ancho*pieza.alto; i+=pieza.ancho) {
+        for(int j = 0; j < pieza.ancho; j++) {
+            if((int)pieza.geometria[i + j] == 1) {
+                this->cuadricula[pieza.y + j][pieza.x + i/pieza.ancho] = pieza.color;
+            }
+        }
+    }
+}
+
+// agrega todas las piezas del tablero
+void Tablero::agregarPiezas(){
+    for(int i=0; i< cantidadPiezas; i++){
+        this->agregarPieza(piezas[i][0]);
     }
 }
