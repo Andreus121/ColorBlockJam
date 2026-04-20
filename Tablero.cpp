@@ -522,3 +522,37 @@ bool Tablero::moverBloque(uint8_t idBloque, char direccion){
 
     return true;
 }
+
+//genera los tableros vecinos aplicando movimientos legales de cada bloque en cada dirección
+Tablero** Tablero::generarVecinos(int& cantidadVecinos){
+    //capacidad máxima: cada bloque puede ir en 4 direcciones
+    int capacidad = this->cantidadBloques * 4;
+    if(capacidad == 0){
+        cantidadVecinos = 0;
+        return nullptr;
+    }
+    //listado de tableros posibles
+    Tablero** vecinos = new Tablero*[capacidad];
+    int n = 0;
+
+    char direcciones[4] = {'U', 'D', 'L', 'R'};
+
+    //por cada bloque vivo
+    for(int b = 0; b < this->cantidadBloques; b++){
+        uint8_t idBloque = this->bloques[b]->id;
+        for(int d = 0; d < 4; d++){
+            //chequear si el movimiento es legal en este tablero (sin clonar)
+            if(!this->comprobarMovimiento(idBloque, direcciones[d])) continue;
+
+            //clonar y aplicar el movimiento al clon
+            Tablero* hijo = this->clonar();
+            hijo->moverBloque(idBloque, direcciones[d]);
+            //moverBloque ya setea hijo->movimientoOrigen y hijo->padre ya es 'this'
+            vecinos[n] = hijo;
+            n++;
+        }
+    }
+
+    cantidadVecinos = n;
+    return vecinos;
+}

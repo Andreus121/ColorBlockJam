@@ -84,7 +84,24 @@ int main(){
     std::cout << "\n--- Prueba 5: el clon sigue intacto ---" << std::endl;
     clon->imprimir();
     std::cout << "clon contadorMovimientos: " << clon->contadorMovimientos << std::endl;
- 
+
+    std::cout << "\n--- Prueba 6: generarVecinos del clon ---" << std::endl;
+    int n;
+    Tablero** vecinos = clon->generarVecinos(n);
+    std::cout << "Vecinos generados: " << n << std::endl;
+    for(int i = 0; i < n; i++){
+        std::cout << "Vecino " << i << " (movimiento "
+                  << (int)vecinos[i]->movimientoOrigen.idBloque
+                  << vecinos[i]->movimientoOrigen.direccion << "):" << std::endl;
+        vecinos[i]->imprimir();
+        std::cout << "  contadorMovimientos: " << vecinos[i]->contadorMovimientos << std::endl;
+        std::cout << "  esSolucion? " << (vecinos[i]->esSolucion() ? "Si" : "No") << std::endl;
+        std::cout << "  padre apunta al clon? " << (vecinos[i]->padre == clon ? "Si" : "No") << std::endl;
+    }
+    //limpiar vecinos
+    for(int i = 0; i < n; i++) delete vecinos[i];
+    delete[] vecinos;
+
     delete clon;
     delete tablero;
  

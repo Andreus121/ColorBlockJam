@@ -88,4 +88,12 @@ class Tablero {
     //después de un movimiento, chequea si el bloque puede cruzar
     //una compuerta adyacente. si sí, teletransporta y retorna true.
     bool intentarCompuerta(uint8_t idBloque);
+
+    //genera todos los tableros vecinos: por cada bloque vivo y por cada
+    //direccion (U/D/L/R), si el movimiento es legal, clona el tablero,
+    //aplica el movimiento, y agrega el clon al arreglo retornado.
+    //Cada vecino tiene padre=this y movimientoOrigen seteado.
+    //El llamador es el dueño de los vecinos y debe liberarlos con delete.
+    //cantidadVecinos retorna por referencia cuántos hijos válidos hubo.
+    Tablero** generarVecinos(int& cantidadVecinos);
 };
