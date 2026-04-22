@@ -1,4 +1,4 @@
-all: testBloque testSalida testCompuerta testTablero testMovimiento testParser
+all: testBloque testSalida testCompuerta testTablero testMovimiento testParser testMinHeap testHashSet
 
 StaticData.o: StaticData.h StaticData.cpp
 	g++ -c StaticData.cpp
@@ -33,5 +33,15 @@ Parser.o: Parser.h Parser.cpp StaticData.o Salida.o Compuerta.o Bloque.o Movimie
 testParser: testParser.cpp Parser.o StaticData.o Salida.o Compuerta.o Bloque.o Movimiento.o Tablero.o
 	g++ Bloque.o Salida.o Compuerta.o StaticData.o Parser.o Movimiento.o Tablero.o testParser.cpp -o testParser
 
+MinHeap.o: MinHeap.h MinHeap.cpp Tablero.o
+	g++ -c MinHeap.cpp
+testMinHeap: testMinHeap.cpp MinHeap.o Tablero.o Bloque.o Salida.o Compuerta.o StaticData.o Movimiento.o
+	g++ MinHeap.o Tablero.o Bloque.o Salida.o Compuerta.o StaticData.o Movimiento.o testMinHeap.cpp -o testMinHeap
+
+HashSet.o: HashSet.h HashSet.cpp Tablero.o
+	g++ -c HashSet.cpp
+testHashSet: testHashSet.cpp HashSet.o Parser.o Tablero.o Bloque.o Salida.o Compuerta.o StaticData.o Movimiento.o
+	g++ HashSet.o Parser.o Tablero.o Bloque.o Salida.o Compuerta.o StaticData.o Movimiento.o testHashSet.cpp -o testHashSet
+
 clean:
-	rm -f *.o testBloque testSalida testCompuerta testTablero testMovimiento testParser
+	rm -f *.o testBloque testSalida testCompuerta testTablero testMovimiento testParser testMinHeap testHashSet
