@@ -112,4 +112,10 @@ class Tablero {
     //de cada bloque vivo a la salida más cercana de su mismo color.
     //Es una heuristica admisible: nunca sobreestima la distancia real.
     int heuristica();
+
+    //libera la memoria de la cuadricula y la pone a nullptr.
+    //Usado para ahorrar memoria: tableros guardados en el ClosedSet de A*
+    //no necesitan su cuadricula (solo se usa para imprimir y moverBloque).
+    //Si se llama imprimir/moverBloque despues, reconstruirCuadricula la regenera.
+    void liberarCuadricula();
 };

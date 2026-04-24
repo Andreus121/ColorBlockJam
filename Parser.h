@@ -20,7 +20,7 @@ ID COLOR=c WIDTH=w HEIGHT=h INIT_X=x INIT_Y=y GEOMETRY=...
 [WALL]
 matriz de '#' y ' ' del tamaño WIDTH x HEIGHT
 
-[EXIT]C
+[EXIT]
 OLOR=c X=x Y=y ORIENTATION=H|V LI=li LF=lf STEP=p
 
 [GATE]

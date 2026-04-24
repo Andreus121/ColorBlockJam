@@ -31,11 +31,15 @@ Tablero::Tablero(StaticData* staticData,
 
 Tablero::~Tablero(){
     //liberar cuadricula
-    int alto = staticData->altoTablero;
-    for(int i = 0; i < alto; i++){
-        delete[] this->cuadricula[i];
+    //(puede haber sido liberada por liberarCuadricula() para ahorrar memoria durante A*
+    if(this->cuadricula != nullptr){
+        int alto = staticData->altoTablero;
+        for(int i = 0; i < alto; i++){
+            delete[] this->cuadricula[i];
+        }
+        delete[] this->cuadricula;
+        this->cuadricula = nullptr;
     }
-    delete[] this->cuadricula;
 
     //liberar bloques vivos
     for(int i = 0; i < this->cantidadBloques; i++){
@@ -63,6 +67,14 @@ Tablero::~Tablero(){
 void Tablero::reconstruirCuadricula(){
     int alto = this->staticData->altoTablero;
     int ancho = this->staticData->anchoTablero;
+
+    //si la cuadricula fue liberada (por ahorro de memoria), la reservamos de nuevo
+    if(this->cuadricula == nullptr){
+        this->cuadricula = new char*[alto];
+        for(int i = 0; i < alto; i++){
+            this->cuadricula[i] = new char[ancho];
+        }
+    }
 
     //copiar paredes base desde staticData
     //'#' pared, ' ' vacío
@@ -706,4 +718,19 @@ int Tablero::heuristica(){
         total += mejorDist;
     }
     return total;
+}
+
+//Libera el arreglo de cuadricula para ahorrar memoria.
+//Usado por A* al mover tableros al ClosedSet: alli solo nos interesa
+//comparar estados por hash/esIgual y seguir punteros padre, no ver la visual.
+//Si alguien despues llama imprimir() o moverBloque() sobre este tablero,
+//reconstruirCuadricula() la regenerara automaticamente.
+void Tablero::liberarCuadricula(){
+    if(this->cuadricula == nullptr) return;
+    int alto = this->staticData->altoTablero;
+    for(int i = 0; i < alto; i++){
+        delete[] this->cuadricula[i];
+    }
+    delete[] this->cuadricula;
+    this->cuadricula = nullptr;
 }
