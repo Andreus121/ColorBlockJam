@@ -80,7 +80,11 @@ class Tablero {
     //sin costo al usar la salida o compuerta, además
     //suma 1 a contadorMovimientos. Retorna true si el movimiento se hizo.
     bool moverBloque(uint8_t idBloque, char direccion);
-
+    
+    //retorna la suma total de las distancias de cada bloque con su salida
+    //estas distancias consideran los bordes del bloque a diferencia de la heuristica
+    int contarMovimientosNecesarios();
+    
     //después de un movimiento, chequea si el bloque puede salir.
     //si sí, elimina el bloque del arreglo y retorna true.
     bool intentarSalida(uint8_t idBloque);

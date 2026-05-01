@@ -535,6 +535,64 @@ bool Tablero::moverBloque(uint8_t idBloque, char direccion){
     return true;
 }
 
+//retornar la suma de las distancias de cada bloque con su salida
+int Tablero::contarMovimientosNecesarios(){
+    int total = 0;
+    for(int b = 0; b < this->cantidadBloques; b++){
+        //obtener el puntero del bloque y sus datos
+        Bloque* bloque = this->bloques[b];
+        int id = bloque->id;
+        char color = this->staticData->coloresBloques[id];
+        int anchoB = this->staticData->anchoBloques[id];
+        int altoB = this->staticData->altoBloques[id];
+
+        //buscar la salida del mismo color más cercana
+        int mejorDist = -1;
+        for(int s = 0; s < this->staticData->cantidadSalidas; s++){
+            //verificar el mismo color
+            if(this->staticData->coloresSalidas[s] != color){
+                continue;
+            }
+
+            //usamos como referencia el centro del bloque y la posición de la salida
+            int bx = bloque->x;
+            int by = bloque->y;
+            int sx = this->staticData->xSalidas[s];
+            int sy = this->staticData->ySalidas[s];
+
+            //distancia desde el BORDE del bloque mas cercano a la salida.
+            //Si la salida esta a la derecha del bloque (sx >= x+anchoB),
+            //el borde derecho del bloque tiene que recorrer sx-(x+anchoB) celdas.
+            //Si esta a la izquierda (sx < x), el borde izquierdo recorre x-sx.
+            //Si la salida esta dentro del rango del bloque, distancia 0 en X.
+            int dx;
+            if(sx >= bloque->x + anchoB) dx = sx - (bloque->x + anchoB);
+            else if(sx < bloque->x) dx = bloque->x - sx;
+            else dx = 0;
+
+            int dy;
+            if(sy >= bloque->y + altoB) dy = sy - (bloque->y + altoB);
+            else if(sy < bloque->y) dy = bloque->y - sy;
+            else dy = 0;
+
+            int dist = dx + dy;
+            //guardar solo la menor distancia a una salida del mismo color
+            if(mejorDist == -1 || dist < mejorDist){
+                mejorDist = dist;
+            }
+        }
+
+        //si no hay salida del color, el tablero no tiene solución
+        //por lo que se devuelve una heurestica alta
+        //para procesar la decision en otra funcion
+        if(mejorDist == -1){
+            mejorDist = 1000;
+        }
+        total += mejorDist;
+    }
+    return total;
+}
+
 //genera los tableros vecinos aplicando movimientos legales de cada bloque en cada dirección
 Tablero** Tablero::generarVecinos(int& cantidadVecinos){
     //capacidad máxima: cada bloque puede ir en 4 direcciones
@@ -644,7 +702,8 @@ unsigned long Tablero::hash(){
     int nb = this->staticData->cantidadBloques;
     for(int id = 0; id < nb; id++){
         //buscar si el bloque 'id' sigue vivo
-        int x = -1, y = -1; //-1 indica que salió
+        int x = -1; //-1 indica que salió
+        int y = -1; //-1 indica que salió
         for(int i = 0; i < this->cantidadBloques; i++){
             if((int)this->bloques[i]->id == id){
                 x = this->bloques[i]->x;
@@ -699,8 +758,14 @@ int Tablero::heuristica(){
             int sy = this->staticData->ySalidas[s];
 
             //calcular distancia mediante distancia Manhattan: |dx| + |dy|
-            int dx = bx - sx; if(dx < 0) dx = -dx;
-            int dy = by - sy; if(dy < 0) dy = -dy;
+            int dx = bx - sx; 
+            if(dx < 0){
+                dx = -dx;
+            }
+            int dy = by - sy; 
+            if(dy < 0){
+                dy = -dy;
+            }
             int dist = dx + dy;
 
             //guardar solo la menor distancia a una salida del mismo color

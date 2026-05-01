@@ -40,6 +40,17 @@ Camino* AStar::resolver(){
     //obtener el limite de movimientos inicial
     int stepLimit = this->inicial->staticData->limiteMovimientos;
 
+    //si se necesitan más pasos que el limite del mapa, se da por imposible y finaliza
+    int cantMinMovimientos = raiz->contarMovimientosNecesarios();
+    if(cantMinMovimientos > stepLimit){
+        delete raiz;
+        delete openSet;
+        delete closedSet;
+        clock_t finTiempo = clock();
+        this->ultimoTiempo = (int)((double)(finTiempo - inicioTiempo) * 1000.0 / CLOCKS_PER_SEC);
+        return nullptr; //sin solucion
+    }
+
     Camino* resultado = nullptr;//almacenar el camino resultante
     Tablero* tableroSolucion = nullptr;//guardar el tablero final para la reconstruccion del camino
 
